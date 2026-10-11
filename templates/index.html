@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}AlgoScope — DSA Complexity Analyzer{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-badge">🔬 Powered by ML</div>
+  <h1 class="hero-title">Analyze Your Algorithm's <span class="gradient-text">Complexity</span></h1>
+  <p class="hero-sub">Paste any Python or pseudocode. AlgoScope will estimate Big-O complexity, review your logic, and suggest optimizations — instantly.</p>
+</section>
+
+<section class="analyzer-section">
+  {% if error %}
+  <div class="alert alert-error">{{ error }}</div>
+  {% endif %}
+
+  <form action="/analyze" method="POST" id="analyze-form">
+    <div class="code-input-wrapper">
+      <div class="code-input-header">
+        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+        <span class="code-label">Your Code</span>
+        <button type="button" class="btn-clear" onclick="document.getElementById('code-input').value=''">Clear</button>
+      </div>
+      <textarea
+        id="code-input"
+        name="code"
+        class="code-textarea"
+        placeholder="# Paste your Python code or pseudocode here...
+# Example:
+for i in range(n):
+    for j in range(n):
+        print(i, j)"
+        spellcheck="false"
+        rows="16"
+      ></textarea>
+    </div>
+
+    <div class="examples-row">
+      <span class="examples-label">Try an example:</span>
+      <button type="button" class="btn-example" data-code="for i in range(n):\n    for j in range(n):\n        print(i, j)">Nested Loop O(n²)</button>
+      <button type="button" class="btn-example" data-code="def binary_search(arr, target):\n    lo, hi = 0, len(arr) - 1\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if arr[mid] == target:\n            return mid\n        elif arr[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid - 1\n    return -1">Binary Search</button>
+      <button type="button" class="btn-example" data-code="def fib(n):\n    if n <= 1:\n        return n\n    return fib(n-1) + fib(n-2)">Fibonacci O(2^n)</button>
+    </div>
+
+    <button type="submit" class="btn-analyze" id="analyze-btn">
+      <span class="btn-text">⟨/⟩ &nbsp; Analyze Complexity</span>
+      <span class="btn-spinner hidden" id="spinner">⏳ Analyzing...</span>
+    </button>
+  </form>
+</section>
+
+<section class="features-row">
+  <div class="feature-card">
+    <div class="feature-icon">🏷️</div>
+    <h3>Big-O Detection</h3>
+    <p>Identifies O(1) through O(2^n) using rule-based heuristics + ML</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">📈</div>
+    <h3>Growth Curve Graph</h3>
+    <p>Visual comparison of all complexities with yours highlighted</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">💡</div>
+    <h3>Suggestions</h3>
+    <p>Actionable optimization tips tailored to your code patterns</p>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}AlgoScope — Results{% endblock %}
+
+{% block content %}
+<section class="result-hero">
+  <a href="/" class="btn-back">← Analyze Another</a>
+  <h1>Analysis <span class="gradient-text">Complete</span></h1>
+</section>
+
+<!-- Complexity Badge -->
+<section class="badge-section">
+  <div class="complexity-card badge-{{ result.badge_color }}">
+    <div class="complexity-label">Time Complexity</div>
+    <div class="complexity-value">{{ result.complexity }}</div>
+    <div class="complexity-tag">{{ result.label }}</div>
+  </div>
+  <div class="complexity-card badge-neutral">
+    <div class="complexity-label">Space Complexity</div>
+    <div class="complexity-value">{{ result.space }}</div>
+    <div class="complexity-tag">Estimated</div>
+  </div>
+  {% if result.confidence %}
+  <div class="complexity-card badge-neutral">
+    <div class="complexity-label">ML Confidence</div>
+    <div class="complexity-value">{{ result.confidence }}%</div>
+    <div class="complexity-tag">Logistic Regression</div>
+  </div>
+  {% endif %}
+</section>
+
+<!-- Growth Curve Graph -->
+<section class="graph-section card">
+  <h2 class="section-title">📈 Big-O Growth Curve Comparison</h2>
+  <p class="section-sub">Your complexity <strong>{{ result.complexity }}</strong> is highlighted in purple.</p>
+  <div class="chart-wrapper">
+    <canvas id="growthChart"></canvas>
+  </div>
+</section>
+
+<!-- Reasoning -->
+<section class="card">
+  <h2 class="section-title">🧠 How We Got Here</h2>
+  <ul class="reasoning-list">
+    {% for point in result.reasoning %}
+    <li class="reasoning-item">{{ point }}</li>
+    {% endfor %}
+  </ul>
+</section>
+
+<!-- Code Submitted -->
+<section class="card">
+  <h2 class="section-title">📄 Submitted Code</h2>
+  <div class="code-block-wrapper">
+    <button class="btn-copy" onclick="copyCode()">Copy</button>
+    <pre class="code-block"><code id="submitted-code">{{ code }}</code></pre>
+  </div>
+</section>
+
+<!-- Review -->
+<section class="card">
+  <h2 class="section-title">🔍 Code Review</h2>
+  {% if result.review %}
+  <ul class="review-list">
+    {% for item in result.review %}
+    <li class="review-item">
+      <span class="review-icon">{{ item.icon }}</span>
+      <div>
+        <strong>{{ item.title }}</strong>
+        <p>{{ item.detail }}</p>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="muted">No specific review points — code looks clean!</p>
+  {% endif %}
+</section>
+
+<!-- Suggestions -->
+<section class="card">
+  <h2 class="section-title">💡 Optimization Suggestions</h2>
+  {% if result.suggestions %}
+  <ul class="suggestions-list">
+    {% for s in result.suggestions %}
+    <li class="suggestion-item">
+      <span class="suggestion-bullet">→</span>
+      <span>{{ s }}</span>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="muted">✅ No major optimizations needed. Great algorithm!</p>
+  {% endif %}
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script>
+  const detectedComplexity = "{{ result.complexity }}";
+  initGrowthChart(detectedComplexity);
+</script>
+{% endblock %}
